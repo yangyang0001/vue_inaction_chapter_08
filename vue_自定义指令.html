@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自定义指令</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+
+<body>
+
+    <p>------------------------------ app1 自定义指令的常用方式 ----------------------------</p>
+    <div id="app1">
+        <input type="text" v-focus></input>
+    </div>
+    
+    <p>------------------------------ app2 自定义指令传递相关的参数用法 ----------------------------</p>
+    <div id="app2">
+        <div v-app2-command:msg.a.b="message"></div>
+    </div>
+    
+    <p>------------------------------ app3 自定义指令传递更复杂的数据 ----------------------------</p>
+    <div id="app3">
+        <div v-app3-command="student">
+            <p>student.username is : {{student.username}}</p>
+            <p>student.password is : {{student.password}}</p>
+        </div>
+    </div>
+
+    <script>
+        Vue.directive('focus', {
+            bind(el, binding, vnode) { },                // 只调用一次
+            inserted(el, binding, vnode) {
+                // 聚焦元素
+                el.focus();
+            },
+            update(el, binding, vnode, oldVnode) { },
+            componentUpdated(el, binding, vnode) { },
+            unbind(el, binding, vnode) { },
+        });
+        const app1 = new Vue({
+            el: '#app1',
+            data: {},
+        });
+
+        Vue.directive('app2-command', {
+            bind(el, binding, vnode) {
+                var keys = [];
+                for (var i in vnode) {
+                    keys.push(i);
+                }
+                el.innerHTML =
+                    'name  :' + binding.name + '<br/>' +
+                    'value :' + binding.value + '<br/>' +
+                    'expre :' + binding.expression + '<br/>' +
+                    'arg   :' + binding.arg + '<br/>' +
+                    'modifiers :' + JSON.stringify(binding.modifiers) + '<br/>' +
+                    'keys  :' + keys.join(',');
+            },
+            inserted(el, binding, vnode) { },
+            update(el, binding, vnode, oldVnode) { },
+            componentUpdated(el, binding, vnode) { },
+            unbind(el, binding, vnode) { },
+        });
+        const app2 = new Vue({
+            el: '#app2',
+            data: {
+                message: 'zhangsan'
+            }
+        });
+
+        Vue.directive("app3-command", {
+            bind(el, binding, vnode) { },                // 只调用一次
+            inserted(el, binding, vnode) {
+                console.log('student.username is :' + binding.value.username);
+                console.log('student.password is :' + binding.value.password);
+            },
+            update(el, binding, vnode, oldVnode) { },
+            componentUpdated(el, binding, vnode) { },
+            unbind(el, binding, vnode) { },
+        });
+        const app3 = new Vue({
+            el: '#app3',
+            data: {
+                student: {
+                    username: 'zhangsan',
+                    password: '123456'
+                }
+            },
+
+        });
+
+    </script>
+
+
+</body>
+
+</html>
